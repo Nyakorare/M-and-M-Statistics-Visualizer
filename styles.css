@@ -1,0 +1,128 @@
+/* Base input styles */
+.input {
+  @apply border-2 rounded-xl px-4 py-3 focus:outline-none transition-all duration-300 w-full;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* M&M Icon styles */
+.mm-icon {
+  @apply w-6 h-6 rounded-full inline-block shadow-md;
+  border: 1px solid rgba(0,0,0,0.1);
+  transform: rotate(-15deg);
+}
+
+.mm-icon.red { background-color: #E91E63; }
+.mm-icon.green { background-color: #4CAF50; }
+.mm-icon.blue { background-color: #2196F3; }
+.mm-icon.yellow { background-color: #FFEB3B; }
+.mm-icon.orange { background-color: #FF9800; }
+.mm-icon.brown { background-color: #795548; }
+
+/* Input color variations */
+.red-input {
+  @apply border-red-300 focus:border-red-500 focus:ring-red-200;
+  background-color: rgba(233, 30, 99, 0.05);
+}
+
+.green-input {
+  @apply border-green-300 focus:border-green-500 focus:ring-green-200;
+  background-color: rgba(76, 175, 80, 0.05);
+}
+
+.blue-input {
+  @apply border-blue-300 focus:border-blue-500 focus:ring-blue-200;
+  background-color: rgba(33, 150, 243, 0.05);
+}
+
+.yellow-input {
+  @apply border-yellow-300 focus:border-yellow-500 focus:ring-yellow-200;
+  background-color: rgba(255, 235, 59, 0.05);
+}
+
+.orange-input {
+  @apply border-orange-300 focus:border-orange-500 focus:ring-orange-200;
+  background-color: rgba(255, 152, 0, 0.05);
+}
+
+.brown-input {
+  @apply border-amber-300 focus:border-amber-500 focus:ring-amber-200;
+  background-color: rgba(121, 85, 72, 0.05);
+}
+
+/* Simulation styles */
+.mm-simulation {
+  @apply absolute right-0 top-0 h-full w-12 rounded-r-xl overflow-hidden pointer-events-none;
+  background-size: 20px 20px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+  opacity: 0.8;
+}
+
+.red-simulation { background-color: rgba(233, 30, 99, 0.15); }
+.green-simulation { background-color: rgba(76, 175, 80, 0.15); }
+.blue-simulation { background-color: rgba(33, 150, 243, 0.15); }
+.yellow-simulation { background-color: rgba(255, 235, 59, 0.15); }
+.orange-simulation { background-color: rgba(255, 152, 0, 0.15); }
+.brown-simulation { background-color: rgba(121, 85, 72, 0.15); }
+
+/* Animation keyframes */
+@keyframes mmCount {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes mmBounce {
+  0%, 100% { transform: translateY(0) rotate(-15deg); }
+  50% { transform: translateY(-10px) rotate(-15deg); }
+}
+
+.animate-mms {
+  animation: mmCount 1s infinite linear;
+}
+
+/* Add bounce animation to M&M icons */
+.mm-icon {
+  animation: mmBounce 2s infinite;
+}
+
+/* Modal animations */
+.animate__zoomIn {
+  animation-duration: 0.3s;
+}
+
+.animate__zoomOut {
+  animation-duration: 0.3s;
+}
+
+/* Custom scrollbar for insights */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a78bfa;
+}
+
+/* Responsive adjustments for insights */
+@media (max-width: 640px) {
+  .insight-item {
+    padding: 0.75rem;
+  }
+  
+  .insight-item h3 {
+    font-size: 0.875rem;
+  }
+  
+  .insight-item p {
+    font-size: 0.875rem;
+  }
+}
