@@ -128,11 +128,29 @@
       </div>
       
       <div id="graph-tab" class="tab-content hidden">
+        <div class="mb-4 flex flex-col space-y-4">
+          <div class="flex items-center space-x-4">
+            <label class="text-gray-700 dark:text-gray-300">Graph Type:</label>
+            <select id="graphType" class="border rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <option value="bar">Bar Chart</option>
+              <option value="pie">Pie Chart</option>
+              <option value="line">Line Chart</option>
+            </select>
+          </div>
+          <div class="flex items-center space-x-4">
+            <label class="text-gray-700 dark:text-gray-300">Show:</label>
+            <select id="graphData" class="border rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <option value="count">Count</option>
+              <option value="percentage">Percentage</option>
+              <option value="cumulative">Cumulative</option>
+            </select>
+          </div>
+        </div>
         <div class="h-64 md:h-80">
           <canvas id="mmChart"></canvas>
         </div>
         <div class="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
-          <p>Hover over bars to see exact counts</p>
+          <p>Hover over elements to see exact values</p>
         </div>
       </div>
       

@@ -27,6 +27,8 @@ function switchTab(tabName) {
 function createBarGraph(data) {
   const ctx = document.getElementById('mmChart').getContext('2d');
   const isDarkMode = document.documentElement.classList.contains('dark');
+  const graphType = document.getElementById('graphType').value;
+  const dataType = document.getElementById('graphData').value;
   
   const textColor = isDarkMode ? '#e5e7eb' : '#374151';
   const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -35,40 +37,72 @@ function createBarGraph(data) {
     mmChart.destroy();
   }
 
-  mmChart = new Chart(ctx, {
-    type: 'bar',
+  // Calculate total for percentages
+  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  
+  // Prepare data based on selected type
+  let chartData;
+  if (dataType === 'percentage') {
+    chartData = Object.entries(data).map(([color, count]) => ({
+      color,
+      value: (count / total * 100).toFixed(1)
+    }));
+  } else if (dataType === 'cumulative') {
+    let cumulative = 0;
+    chartData = Object.entries(data).map(([color, count]) => {
+      cumulative += count;
+      return {
+        color,
+        value: cumulative
+      };
+    });
+  } else {
+    chartData = Object.entries(data).map(([color, count]) => ({
+      color,
+      value: count
+    }));
+  }
+
+  const colors = {
+    Red: 'rgba(233, 30, 99, 0.7)',
+    Green: 'rgba(76, 175, 80, 0.7)',
+    Blue: 'rgba(33, 150, 243, 0.7)',
+    Yellow: 'rgba(255, 235, 59, 0.7)',
+    Orange: 'rgba(255, 152, 0, 0.7)',
+    Brown: 'rgba(121, 85, 72, 0.7)'
+  };
+
+  const borderColors = {
+    Red: 'rgba(233, 30, 99, 1)',
+    Green: 'rgba(76, 175, 80, 1)',
+    Blue: 'rgba(33, 150, 243, 1)',
+    Yellow: 'rgba(255, 235, 59, 1)',
+    Orange: 'rgba(255, 152, 0, 1)',
+    Brown: 'rgba(121, 85, 72, 1)'
+  };
+
+  const config = {
+    type: graphType,
     data: {
-      labels: Object.keys(data),
+      labels: chartData.map(item => item.color),
       datasets: [{
-        label: 'M&M Count',
-        data: Object.values(data),
-        backgroundColor: [
-          'rgba(233, 30, 99, 0.7)',
-          'rgba(76, 175, 80, 0.7)',
-          'rgba(33, 150, 243, 0.7)',
-          'rgba(255, 235, 59, 0.7)',
-          'rgba(255, 152, 0, 0.7)',
-          'rgba(121, 85, 72, 0.7)'
-        ],
-        borderColor: [
-          'rgba(233, 30, 99, 1)',
-          'rgba(76, 175, 80, 1)',
-          'rgba(33, 150, 243, 1)',
-          'rgba(255, 235, 59, 1)',
-          'rgba(255, 152, 0, 1)',
-          'rgba(121, 85, 72, 1)'
-        ],
+        label: dataType === 'percentage' ? 'Percentage (%)' : 
+               dataType === 'cumulative' ? 'Cumulative Count' : 'Count',
+        data: chartData.map(item => parseFloat(item.value)),
+        backgroundColor: chartData.map(item => colors[item.color]),
+        borderColor: chartData.map(item => borderColors[item.color]),
         borderWidth: 1
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
+      scales: graphType === 'pie' ? {} : {
         y: {
           beginAtZero: true,
           ticks: {
-            color: textColor
+            color: textColor,
+            callback: dataType === 'percentage' ? value => value + '%' : undefined
           },
           grid: {
             color: gridColor
@@ -94,11 +128,20 @@ function createBarGraph(data) {
           titleColor: textColor,
           bodyColor: textColor,
           borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-          borderWidth: 1
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              const value = context.raw;
+              const label = context.dataset.label || '';
+              return `${label}: ${value}${dataType === 'percentage' ? '%' : ''}`;
+            }
+          }
         }
       }
     }
-  });
+  };
+
+  mmChart = new Chart(ctx, config);
 }
 
 function generateInsights(data, stats) {
@@ -520,5 +563,28 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.toggle('dark');
     const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     localStorage.setItem('theme', theme);
+  });
+
+  // Add event listeners for graph controls
+  document.getElementById('graphType').addEventListener('change', () => {
+    const form = document.getElementById('mmForm');
+    const data = {};
+    for (const element of form.elements) {
+      if (element.name) {
+        data[element.name] = parseInt(element.value) || 0;
+      }
+    }
+    createBarGraph(data);
+  });
+
+  document.getElementById('graphData').addEventListener('change', () => {
+    const form = document.getElementById('mmForm');
+    const data = {};
+    for (const element of form.elements) {
+      if (element.name) {
+        data[element.name] = parseInt(element.value) || 0;
+      }
+    }
+    createBarGraph(data);
   });
 });
