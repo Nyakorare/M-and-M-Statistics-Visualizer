@@ -9,9 +9,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gradient-to-br from-purple-50 to-pink-50 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-purple-50 to-pink-50 min-h-screen flex items-center justify-center p-4 dark:bg-gray-900 dark:from-gray-800 dark:to-gray-900">
+  <button id="darkModeToggle" class="fixed top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+  </button>
   <div class="w-full max-w-4xl bg-white p-8 rounded-3xl shadow-xl">
-    <h1 class="text-3xl font-bold text-center mb-8 text-purple-600">🍬 M&M Statistics Visualizer</h1>
+    <div class="flex flex-col items-center mb-8">
+      <img src="Mm.png" alt="M&M Logo" class="h-20 w-20 mb-4 object-contain">
+      <h1 class="text-3xl font-bold text-center text-purple-600">🍬 M&M Statistics Visualizer</h1>
+    </div>
     <p class="text-center text-gray-600 mb-8">Enter the count of M&Ms for each color to calculate descriptive statistics</p>
 
     <form id="mmForm" class="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -86,10 +94,13 @@
 
   <!-- Modal -->
   <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden overflow-y-auto">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 md:p-8 animate__animated animate__zoomIn my-8">
-      <div class="flex justify-between items-center mb-4 md:mb-6">
-        <h2 class="text-xl md:text-2xl font-semibold text-gray-800">📊 Results</h2>
-        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 close-modal">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full p-4 md:p-8 animate__animated animate__zoomIn my-8">
+      <div class="flex flex-col items-center mb-4 md:mb-6 relative">
+        <img src="Mm.png" alt="M&M Logo" class="h-16 w-16 mb-4 object-contain">
+        <div class="flex items-center">
+          <h2 class="text-xl md:text-2xl font-semibold text-black dark:text-white">📊 Results</h2>
+        </div>
+        <button onclick="closeModal()" class="absolute top-0 right-0 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white close-modal">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -98,14 +109,14 @@
       
       <!-- Tabs -->
       <div class="mb-4 md:mb-6">
-        <div class="flex flex-wrap space-x-2 md:space-x-4 border-b border-gray-200">
-          <button onclick="switchTab('stats')" class="tab-button active px-3 py-2 text-sm md:text-base text-purple-600 border-b-2 border-purple-600 font-medium">
+        <div class="flex flex-wrap space-x-2 md:space-x-4 border-b border-gray-200 dark:border-gray-700">
+          <button onclick="switchTab('stats')" class="tab-button active px-3 py-2 text-sm md:text-base text-black dark:text-white border-b-2 border-purple-600 dark:border-purple-400 font-medium">
             Statistics
           </button>
-          <button onclick="switchTab('graph')" class="tab-button px-3 py-2 text-sm md:text-base text-gray-500 hover:text-purple-600 font-medium">
+          <button onclick="switchTab('graph')" class="tab-button px-3 py-2 text-sm md:text-base text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium">
             Bar Graph
           </button>
-          <button onclick="switchTab('insights')" class="tab-button px-3 py-2 text-sm md:text-base text-gray-500 hover:text-purple-600 font-medium">
+          <button onclick="switchTab('insights')" class="tab-button px-3 py-2 text-sm md:text-base text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium">
             Insights
           </button>
         </div>
@@ -113,24 +124,41 @@
 
       <!-- Tab Content -->
       <div id="stats-tab" class="tab-content">
-        <div id="output" class="space-y-3 md:space-y-4 text-gray-700 text-base md:text-lg"></div>
+        <div id="output" class="space-y-3 md:space-y-4 text-black dark:text-white text-base md:text-lg"></div>
       </div>
       
       <div id="graph-tab" class="tab-content hidden">
         <div class="h-64 md:h-80">
           <canvas id="mmChart"></canvas>
         </div>
-        <div class="mt-4 text-center text-sm text-gray-600">
+        <div class="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
           <p>Hover over bars to see exact counts</p>
         </div>
       </div>
       
       <div id="insights-tab" class="tab-content hidden">
-        <div id="insights" class="space-y-3 md:space-y-4 text-gray-700 text-base md:text-lg max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar"></div>
+        <div id="insights" class="space-y-3 md:space-y-4 text-black dark:text-white text-base md:text-lg max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+          <div class="insight-item p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <h3 class="font-semibold text-black dark:text-white mb-2">Total M&Ms</h3>
+            <p class="text-black dark:text-white">The total number of M&Ms in your sample.</p>
+          </div>
+          <div class="insight-item p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <h3 class="font-semibold text-black dark:text-white mb-2">Color Distribution</h3>
+            <p class="text-black dark:text-white">The percentage of each color in your sample.</p>
+          </div>
+          <div class="insight-item p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <h3 class="font-semibold text-black dark:text-white mb-2">Most Common Color</h3>
+            <p class="text-black dark:text-white">The color that appears most frequently in your sample.</p>
+          </div>
+          <div class="insight-item p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <h3 class="font-semibold text-black dark:text-white mb-2">Least Common Color</h3>
+            <p class="text-black dark:text-white">The color that appears least frequently in your sample.</p>
+          </div>
+        </div>
       </div>
 
       <div class="mt-6 md:mt-8">
-        <button onclick="closeModal()" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+        <button onclick="closeModal()" class="w-full bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-800 transition">
           Close
         </button>
       </div>

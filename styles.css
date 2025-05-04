@@ -2,6 +2,25 @@
 .input {
   @apply border-2 rounded-xl px-4 py-3 focus:outline-none transition-all duration-300 w-full;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: white;
+  color: #1f2937;
+}
+
+.dark .input {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .input:focus {
+  border-color: #8b5cf6;
+  outline: none;
 }
 
 /* M&M Icon styles */
@@ -125,4 +144,49 @@
   .insight-item p {
     font-size: 0.875rem;
   }
+}
+
+.dark .w-full.max-w-4xl {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.dark .text-gray-700 {
+  color: #d1d5db;
+}
+
+.dark .text-gray-600 {
+  color: #9ca3af;
+}
+
+.dark .text-purple-600 {
+  color: #a78bfa;
+}
+
+.dark .bg-purple-600 {
+  background-color: #7c3aed;
+}
+
+.dark .bg-pink-500 {
+  background-color: #be185d;
+}
+
+.dark .hover\:bg-purple-700:hover {
+  background-color: #6d28d9;
+}
+
+.dark .hover\:bg-pink-600:hover {
+  background-color: #9d174d;
+}
+
+.dark .border-gray-200 {
+  border-color: #4b5563;
+}
+
+.dark .text-gray-500 {
+  color: #9ca3af;
+}
+
+.dark .hover\:text-gray-700:hover {
+  color: #d1d5db;
 }

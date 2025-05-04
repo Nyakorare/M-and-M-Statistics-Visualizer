@@ -25,38 +25,39 @@ function switchTab(tabName) {
 }
 
 function createBarGraph(data) {
-  const ctx = document.getElementById('mmChart');
+  const ctx = document.getElementById('mmChart').getContext('2d');
+  const isDarkMode = document.documentElement.classList.contains('dark');
   
-  // Destroy existing chart if it exists
+  const textColor = isDarkMode ? '#e5e7eb' : '#374151';
+  const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  
   if (mmChart) {
     mmChart.destroy();
   }
-  
-  const colors = {
-    Red: '#E91E63',
-    Green: '#4CAF50',
-    Blue: '#2196F3',
-    Yellow: '#FFEB3B',
-    Orange: '#FF9800',
-    Brown: '#795548'
-  };
 
-  // Calculate total and percentages
-  const total = Object.values(data).reduce((a, b) => a + b, 0);
-  const percentages = {};
-  Object.entries(data).forEach(([color, count]) => {
-    percentages[color] = ((count / total) * 100).toFixed(1);
-  });
-  
   mmChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: Object.keys(data).map(color => `${color} (${percentages[color]}%)`),
+      labels: Object.keys(data),
       datasets: [{
         label: 'M&M Count',
         data: Object.values(data),
-        backgroundColor: Object.keys(data).map(color => colors[color]),
-        borderColor: Object.keys(data).map(color => colors[color]),
+        backgroundColor: [
+          'rgba(233, 30, 99, 0.7)',
+          'rgba(76, 175, 80, 0.7)',
+          'rgba(33, 150, 243, 0.7)',
+          'rgba(255, 235, 59, 0.7)',
+          'rgba(255, 152, 0, 0.7)',
+          'rgba(121, 85, 72, 0.7)'
+        ],
+        borderColor: [
+          'rgba(233, 30, 99, 1)',
+          'rgba(76, 175, 80, 1)',
+          'rgba(33, 150, 243, 1)',
+          'rgba(255, 235, 59, 1)',
+          'rgba(255, 152, 0, 1)',
+          'rgba(121, 85, 72, 1)'
+        ],
         borderWidth: 1
       }]
     },
@@ -67,64 +68,34 @@ function createBarGraph(data) {
         y: {
           beginAtZero: true,
           ticks: {
-            stepSize: 1,
-            callback: function(value) {
-              return value + ' M&Ms';
-            }
+            color: textColor
           },
-          title: {
-            display: true,
-            text: 'Number of M&Ms',
-            font: {
-              size: 14,
-              weight: 'bold'
-            }
+          grid: {
+            color: gridColor
           }
         },
         x: {
-          title: {
-            display: true,
-            text: 'Color (Percentage of Total)',
-            font: {
-              size: 14,
-              weight: 'bold'
-            }
+          ticks: {
+            color: textColor
+          },
+          grid: {
+            color: gridColor
           }
         }
       },
       plugins: {
         legend: {
-          display: false
+          labels: {
+            color: textColor
+          }
         },
         tooltip: {
-          callbacks: {
-            label: function(context) {
-              const count = context.parsed.y;
-              const percentage = percentages[context.label.split(' ')[0]];
-              return [
-                `Count: ${count} M&Ms`,
-                `Percentage: ${percentage}%`,
-                `Expected: ${(100/6).toFixed(1)}%`
-              ];
-            },
-            title: function(context) {
-              return context[0].label.split(' ')[0] + ' M&Ms';
-            }
-          },
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleFont: {
-            size: 14,
-            weight: 'bold'
-          },
-          bodyFont: {
-            size: 12
-          },
-          padding: 10
+          backgroundColor: isDarkMode ? 'rgba(31, 41, 55, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+          titleColor: textColor,
+          bodyColor: textColor,
+          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+          borderWidth: 1
         }
-      },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
       }
     }
   });
@@ -146,21 +117,21 @@ function generateInsights(data, stats) {
   const leastCommon = sortedColors[sortedColors.length - 1];
   
   // Generate insights
-  insights.push(`<div class="insight-item p-3 md:p-4 bg-purple-50 rounded-lg mb-3 md:mb-4">
-    <h3 class="font-semibold text-purple-700 mb-1 md:mb-2 text-sm md:text-base">Distribution Overview</h3>
-    <p class="text-sm md:text-base">You have a total of ${total} M&Ms, with ${mostCommon[0]} being the most common (${percentages[mostCommon[0]]}%) and ${leastCommon[0]} being the least common (${percentages[leastCommon[0]]}%).</p>
+  insights.push(`<div class="insight-item p-3 md:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-3 md:mb-4">
+    <h3 class="font-semibold text-black dark:text-white mb-1 md:mb-2 text-sm md:text-base">Distribution Overview</h3>
+    <p class="text-black dark:text-white text-sm md:text-base">You have a total of ${total} M&Ms, with ${mostCommon[0]} being the most common (${percentages[mostCommon[0]]}%) and ${leastCommon[0]} being the least common (${percentages[leastCommon[0]]}%).</p>
   </div>`);
   
   // Add insights about distribution
   if (stats.stdDev > 10) {
-    insights.push(`<div class="insight-item p-3 md:p-4 bg-purple-50 rounded-lg mb-3 md:mb-4">
-      <h3 class="font-semibold text-purple-700 mb-1 md:mb-2 text-sm md:text-base">Distribution Analysis</h3>
-      <p class="text-sm md:text-base">The high standard deviation (${stats.stdDev.toFixed(2)}) suggests that the M&Ms are not evenly distributed across colors.</p>
+    insights.push(`<div class="insight-item p-3 md:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-3 md:mb-4">
+      <h3 class="font-semibold text-black dark:text-white mb-1 md:mb-2 text-sm md:text-base">Distribution Analysis</h3>
+      <p class="text-black dark:text-white text-sm md:text-base">The high standard deviation (${stats.stdDev.toFixed(2)}) suggests that the M&Ms are not evenly distributed across colors.</p>
     </div>`);
   } else {
-    insights.push(`<div class="insight-item p-3 md:p-4 bg-purple-50 rounded-lg mb-3 md:mb-4">
-      <h3 class="font-semibold text-purple-700 mb-1 md:mb-2 text-sm md:text-base">Distribution Analysis</h3>
-      <p class="text-sm md:text-base">The relatively low standard deviation (${stats.stdDev.toFixed(2)}) indicates a fairly even distribution of M&Ms across colors.</p>
+    insights.push(`<div class="insight-item p-3 md:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-3 md:mb-4">
+      <h3 class="font-semibold text-black dark:text-white mb-1 md:mb-2 text-sm md:text-base">Distribution Analysis</h3>
+      <p class="text-black dark:text-white text-sm md:text-base">The relatively low standard deviation (${stats.stdDev.toFixed(2)}) indicates a fairly even distribution of M&Ms across colors.</p>
     </div>`);
   }
   
@@ -170,22 +141,20 @@ function generateInsights(data, stats) {
     if (parseFloat(percentage) > 20) {
       colorInsights.push(`<div class="flex items-center mb-2">
         <span class="mm-icon ${color.toLowerCase()} mr-2"></span>
-        <span class="text-sm md:text-base">${color} M&Ms make up ${percentage}% of your total, which is significantly higher than the expected average of 16.67%.</span>
+        <span class="text-black dark:text-white text-sm md:text-base">${color} M&Ms make up ${percentage}% of your total, which is significantly higher than the expected average of 16.67%.</span>
       </div>`);
     } else if (parseFloat(percentage) < 10) {
       colorInsights.push(`<div class="flex items-center mb-2">
         <span class="mm-icon ${color.toLowerCase()} mr-2"></span>
-        <span class="text-sm md:text-base">${color} M&Ms make up only ${percentage}% of your total, which is significantly lower than the expected average of 16.67%.</span>
+        <span class="text-black dark:text-white text-sm md:text-base">${color} M&Ms make up only ${percentage}% of your total, which is significantly lower than the expected average of 16.67%.</span>
       </div>`);
     }
   });
-
+  
   if (colorInsights.length > 0) {
-    insights.push(`<div class="insight-item p-3 md:p-4 bg-purple-50 rounded-lg mb-3 md:mb-4">
-      <h3 class="font-semibold text-purple-700 mb-2 md:mb-3 text-sm md:text-base">Notable Color Distributions</h3>
-      <div class="space-y-2">
-        ${colorInsights.join('')}
-      </div>
+    insights.push(`<div class="insight-item p-3 md:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-3 md:mb-4">
+      <h3 class="font-semibold text-black dark:text-white mb-1 md:mb-2 text-sm md:text-base">Color Analysis</h3>
+      ${colorInsights.join('')}
     </div>`);
   }
   
@@ -303,11 +272,13 @@ function closeModal() {
   modalContent.classList.remove('animate__zoomIn');
   modalContent.classList.add('animate__zoomOut');
   
-  // Wait for animation to complete before hiding
+  // Wait for animation to complete before hiding modal
   setTimeout(() => {
-    modal.classList.add("hidden");
+    modal.classList.add('hidden');
+    // Reset animation classes for next time
     modalContent.classList.remove('animate__zoomOut');
-  }, 300);
+    modalContent.classList.add('animate__zoomIn');
+  }, 300); // Match this with the animation duration in CSS
 }
 
 function showConfirmModal() {
@@ -531,5 +502,23 @@ document.addEventListener('DOMContentLoaded', () => {
         closeConfirmModal();
       }
     }
+  });
+
+  // Dark mode functionality
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  // Check for saved user preference or use system preference
+  const currentTheme = localStorage.getItem('theme') || 
+    (prefersDarkScheme.matches ? 'dark' : 'light');
+  
+  if (currentTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  }
+  
+  darkModeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
   });
 });
